@@ -79,4 +79,4 @@ and Statistics, 33:282–303.
 
 ## Contact
 
-If you would like to add your work to this repository, please contact: Aurore ARCHIMBAUD.
+If you would like to add your work to this repository or contribute to developing new advancements, please open an issue.
