@@ -62,7 +62,7 @@ version 0.6.
 - Ruiz-Gazen, A., Thomas-Agnan, C., Laurent, T., & Mondon, C. (2022). [Detecting outliers in compositional data using Invariant Coordinate Selection.](https://doi.org/10.1007/978-3-031-22687-8_10) In Robust and Multivariate Statistical Methods: Festschrift in Honor of David E. Tyler (pp. 197-224). Cham: Springer International Publishing.[Replication files - R](https://github.com/tibo31/ics_coda)
 
 
-- Archimbaud, A., Nordhausen, K., and Ruiz-Gazen, A. (2018). [ICSOutlier: Unsupervised outlier detection for low-dimensional contamination structure.](https://doi.org/10.32614/RJ-2018-034) The R Journal, 10(1):234–250.
+- Archimbaud, A., Nordhausen, K., and Ruiz-Gazen, A. (2018). [ICSOutlier: Unsupervised outlier detection for low-dimensional contamination structure.](https://doi.org/10.32614/RJ-2018-034) The R Journal, 10(1):234–250. [Replication files - R](https://journal.r-project.org/archive/2018/RJ-2018-034/RJ-2018-034.zip)
 
 - Nordhausen K, Oja H, Tyler DE (2008). [Tools for Exploring Multivariate Data: The Package ICS.](https://doi.org/10.18637/jss.v028.i06) Journal of Statistical Software, 28(6), 1-31. 
 
