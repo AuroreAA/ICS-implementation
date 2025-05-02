@@ -1,61 +1,71 @@
-## ----setup, include=FALSE-------------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+## ----setup, include=FALSE------------------------------------------
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 
 
-## ----libs, message = FALSE------------------------------------------------------
+## ----libs, message = FALSE-----------------------------------------
 library(ICS)
 library(ICSOutlier)
 library(ICSShiny)
 library(ICSClust)
 
 
-## ----ICS------------------------------------------------------------------------
+## ----ICS-----------------------------------------------------------
 out_ICS <- try(ICS(iris))
 X <- iris[,-5]
 out_ICS <- ICS(X)
 out_ICS
 
 
-## ----ICS_methods----------------------------------------------------------------
+## ----ICS_methods---------------------------------------------------
 summary(out_ICS)
 plot(out_ICS)
 coef(out_ICS)
 head(fitted(out_ICS))
 
 
-## ----ICS_attributes-------------------------------------------------------------
+## ----ICS_attributes------------------------------------------------
 # Generalized eigenvalues
+## Extract - solution 1
 out_ICS$gen_kurtosis
+## Extract - solution 2
 gen_kurtosis(out_ICS)
+## Plot
+## Plot - solution 1
 screeplot(out_ICS, type = "bar")
 screeplot(out_ICS, type = "line")
+## Plot - solution 2
 select_plot(out_ICS)
 
 # Extract the component OR scores
+## Extract - solution 1
 head(out_ICS$scores)
+## Extract - solution 2
 head(components(out_ICS))
 head(components(out_ICS, select = 1:2))
 
 
-## ----scatters-------------------------------------------------------------------
+## ----scatters------------------------------------------------------
 # By default - COV-COV4
 out_ICS <- ICS(X, S1 = ICS_cov, S2 = ICS_cov4)
 out_ICS
-component_plot(out_ICS, clusters = iris$Species)
+component_plot(out_ICS, clusters = iris$Species)+
+  ggtitle(paste(out_ICS$S1_label,  out_ICS$S2_label, sep = "-"))
 
 # MCD0.50-COV
 out_ICS_mcd <- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov)
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)
+component_plot(out_ICS_mcd, clusters = iris$Species)+
+  ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = "-"))
 
 # MCD0.25-COV
 out_ICS_mcd <- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov, S1_args = list(alpha = 0.25))
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)
+component_plot(out_ICS_mcd, clusters = iris$Species)+
+  ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = "-"))
 
 
 
-## ----algo-----------------------------------------------------------------------
+## ----algo----------------------------------------------------------
 out_ICS_std <- ICS(X, algorithm = "standard")
 out_ICS_std
 out_ICS_whiten <- ICS(X, algorithm = "whiten")
@@ -64,7 +74,7 @@ out_ICS_QR <- ICS(X, algorithm = "QR")
 out_ICS_QR
 
 
-## ----rank_deficiencies----------------------------------------------------------
+## ----rank_deficiencies---------------------------------------------
 # example of numerical inaccuracies
 X_rank_deficient <- sweep(X, 2, c(10^(-12), 10^(-3), 1, 10^12), "*")
 
@@ -75,7 +85,7 @@ out_ICS_QR <- ICS(X_rank_deficient, algorithm = "QR")
 out_ICS_QR
 
 
-## ----select_comp----------------------------------------------------------------
+## ----select_comp---------------------------------------------------
 # run ICS
 out <- ICS(X, S1 = ICS_tcov, S2 = ICS_cov)
 component_plot(out, clusters = iris$Species)
@@ -110,54 +120,62 @@ select_plot(out_disc, screeplot = FALSE)
 
 
 
-## ----clustering-----------------------------------------------------------------
+## ----clustering----------------------------------------------------
 # indicating the number of components to retain for the dimension reduction
 # step as well as the number of clusters searched for.
 # The default criterion is "med_crit" and clustering method is "kmeans_clust".
-out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
-                nb_select = 1, nb_clusters = 3)
+out <- ICSClust(X, nb_select = 1, nb_clusters = 3)
 out
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 table(iris$Species, out$clusters)
 
 
-## ----clustering_custom----------------------------------------------------------
+## ----clustering_custom---------------------------------------------
 # changing the scatter pair to consider in ICS
-out <- ICSClust(X, nb_select = 1, nb_clusters = 3,
-                ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov))
+out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
+                nb_select = 1, nb_clusters = 3)
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 table(iris$Species, out$clusters)
 
 # changing the criterion for choosing the invariant coordinates
-out <- ICSClust(X, nb_clusters = 3, criterion = "normal_crit",
-                ICS_crit_args = list(level = 0.1, test = "anscombe.test", max_select = NULL))
+out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
+                nb_clusters = 3, criterion = "normal_crit",
+                ICS_crit_args = list(level = 0.1, test = "anscombe.test",
+                                     max_select = NULL))
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
+
 component_plot(out$ICS_out, clusters = factor(out$clusters))
 
 
 # changing the clustering method
-out <- ICSClust(X, nb_clusters = 3, method  = "tkmeans_clust", 
+out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
+                nb_clusters = 3, method  = "tkmeans_clust", 
                 clustering_args = list(alpha = 0.1))
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 
 
 
-## ----HTP------------------------------------------------------------------------
+
+## ----HTP-----------------------------------------------------------
 data(HTP)
 outliers <- c(581, 619)
 boxplot(HTP)
 
 
-## ----outlier_detection----------------------------------------------------------
+## ----outlier_detection---------------------------------------------
 icsOutlier <- ICS_outlier(HTP, method = "norm_test", test = "agostino.test",
                             n_eig = 10, level_test = 0.05, adjust = TRUE,
                             level_dist = 0.025, n_dist = 10)
 
-plot(icsOutlier)
+plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)
 
 # For using several cores and for using a scatter function from a different package
@@ -179,7 +197,7 @@ library(parallel)
 
 
 
-## ----colli----------------------------------------------------------------------
+## ----colli---------------------------------------------------------
 # Import data
 data(HTP3)
 X <- as.matrix(HTP3)
@@ -193,20 +211,19 @@ icsOutlier <- ICS_outlier(X, ICS_algorithm = "QR",
                           level_test = 0.05, adjust = TRUE,
                             level_dist = 0.001, n_dist = 10)
 print(icsOutlier)
-plot(icsOutlier)
+plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)
 
 
-## ----shiny----------------------------------------------------------------------
+## ----shiny---------------------------------------------------------
 # library(ICSShiny)
 # ICSShiny(iris)
 
 
-## ----mixture--------------------------------------------------------------------
+## ----mixture-------------------------------------------------------
 X <- mixture_sim(pct_clusters = c(0.6, 0.4), n = 500, p = 5, delta = 10)
 
 
-## ----plot-----------------------------------------------------------------------
+## ----plot----------------------------------------------------------
 component_plot(X, clusters = X$cluster)
-
 

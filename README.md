@@ -18,6 +18,9 @@ Invariant Coordinate Selection (ICS) is a powerful unsupervised multivariate met
 
 - [ICS](https://cran.r-project.org/web/packages/ICS/index.html) - Nordhausen, K., Alfons, A., Archimbaud, A., Oja, H., Ruiz-Gazen, A. and Tyler, D. E. (2023). R package version 1.4-2.
 
+- [ICSNP](https://CRAN.R-project.org/package=ICSNP) -  Nordhausen K, Sirkia S, Oja H, Tyler D (2023). ICSNP: Tools for Multivariate Nonparametrics. R
+  package version 1.1-2.
+
 - [ICtest](https://CRAN.R-project.org/package=ICtest) - 
 Nordhausen K, Oja H, Tyler D, Virta J (2022). ICtest: Estimating and Testing the Number of Interesting
   Components in Linear Dimension Reduction. R package version 0.3-5.
@@ -37,6 +40,8 @@ Archimbaud A, May J, Nordhausen K, Ruiz-Gazen A (2017). ICSShiny: ICS via a Shin
 version 0.6.
 
 ### Python package
+
+- [ICSpyLab](https://icspylab.readthedocs.io/en/latest/) - Becquart, C., Abdelsameia, A. (2025). ICSpyLab: . Python package version 0.1.0
 
 
 ### Julia code
@@ -59,22 +64,54 @@ version 0.6.
  
 - Archimbaud, A., Drmac, Z., Nordhausen, K., Radojicic, U. & Ruiz-Gazen, A. (2023). [Numerical Considerations and a New Implementation for Invariant Coordinate Selection.](https://doi.org/10.1137/22M1498759) SIAM Journal on Mathematics of Data Science (SIMODS), Vol.5(1):97–121. [Replication files - R](https://github.com/AuroreAA/NCICS)
 
-- Ruiz-Gazen, A., Thomas-Agnan, C., Laurent, T., & Mondon, C. (2022). [Detecting outliers in compositional data using Invariant Coordinate Selection.](https://doi.org/10.1007/978-3-031-22687-8_10) In Robust and Multivariate Statistical Methods: Festschrift in Honor of David E. Tyler (pp. 197-224). Cham: Springer International Publishing.[Replication files - R](https://github.com/tibo31/ics_coda)
+- Ruiz-Gazen, A., Thomas-Agnan, C., Laurent, T., & Mondon, C. (2022). [Detecting outliers in compositional data using Invariant Coordinate Selection.](https://doi.org/10.1007/978-3-031-22687-8_10) In Robust and Multivariate Statistical Methods: Festschrift in Honor of David E. Tyler (pp. 197-224). Cham: Springer International Publishing. [Replication files - R](https://github.com/tibo31/ics_coda)
 
 
 - Archimbaud, A., Nordhausen, K., and Ruiz-Gazen, A. (2018). [ICSOutlier: Unsupervised outlier detection for low-dimensional contamination structure.](https://doi.org/10.32614/RJ-2018-034) The R Journal, 10(1):234–250. [Replication files - R](https://journal.r-project.org/archive/2018/RJ-2018-034/RJ-2018-034.zip)
 
 - Nordhausen K, Oja H, Tyler DE (2008). [Tools for Exploring Multivariate Data: The Package ICS.](https://doi.org/10.18637/jss.v028.i06) Journal of Statistical Software, 28(6), 1-31. 
+[Replication files - R](https://www.jstatsoft.org/index.php/jss/article/view/v028i06/1827)
 
 
 
 
-## Additional references
+
+## References with code available upon request
 
 - Archimbaud, A., Boulfani, F., Gendre, X., Nordhausen, K., Ruiz-Gazen, A., and Virta, J. (2025). [ICS for multivariate functional anomaly detection with applications to predictive maintenance and quality control](https://doi.org/10.1016/j.ecosta.2022.03.003) Econometrics
 and Statistics, 33:282–303.
 
 - Archimbaud, A., Nordhausen, K., and Ruiz-Gazen, A. (2018). [ICS for multivariate outlier detection with application to quality control](https://doi.org/10.1016/j.csda.2018.06.011) Computational Statistics & Data Analysis, 128:184–199.
+
+
+## Additional references
+
+- Nordhausen, K. and Ruiz-Gazen, A. (2022). [On the Usage of Joint Diagonalization in Multivariate Statistics.](https://doi.org/10.1016/j.jmva.2021.104844)  Journal of Multivariate Analysis, 188, 104844.
+
+
+- Fischer, D., Nordhausen, K. and Oja, H. (2020). [On Linear Dimension Reduction Based on Diagonalization of Scatter Matrices for Bioinformatics Downstream Analyses.](https://doi.org/10.1016/j.heliyon.2020.e05732) Heliyon, 6, e05732.
+
+
+- Fischer, D., Honkatukia, M., Tuiskula-Haavisto, M., Nordhausen, K., Cavero, D., Preisinger, R. and Vilkki, J. (2017). [Subgroup Detection in Genotype Data Using Invariant Coordinate Selection.](https://doi.org/10.1186/s12859-017-1589-9) BMC Bioinformatics, 18, 173.
+
+- Liski, E., Nordhausen, K. and Oja, H. (2014). Supervised Invariant Coordinate Selection. Statistics: A Journal of Theoretical and Applied Statistics, 48, 711-731.
+
+- Tyler, D. E., F. Critchley, L. Dümbgen, and H. Oja, 2009. [Invariant co-ordinate selection.](https://doi:10.1111/j.1467-9868.2009.00706.x.) Journal of the Royal Statistical Society:
+Series B (Statistical Methodology), 71, no. 3, 549–592.
+
+- Ilmonen, P., J. Nevalainen, and H. Oja, 2010. Characteristics of multivariate distributions and the invariant coordinate system.
+Statistics & Probability Letters, 80, no. 23, 1844–1853.
+
+- Ilmonen, P., H. Oja, and R. Serfling, 2012. On invariant coordinate system (ICS) functionals. International Statistical Review, 80, 93–110.
+
+- Caussinus, H., M. Fekri, S. Hakam, and A. Ruiz-Gazen, 2003. A monitoring display of multivariate outliers. Computational Statistics & Data Analysis, 44, no. 1, 237–252.
+
+- Caussinus, H. and A. Ruiz, 1990: Interesting projections of multidimensional data by means of generalized principal component analyses. Compstat, K. Momirović and V. Mildner, Eds., Physica-Verlag HD, Heidelberg, 121–126.
+
+- Caussinus, H. and A. Ruiz-Gazen, 1993: Projection pursuit and generalized principal component analysis. New Directions in Statistical Data Analysis and Robustness., S. Morgenthaler, E. 
+Ronchetti, and W. A. Stahel, Eds., Springer, Monte Verita, Proceedings of the Centro Stefano Franciscini Ascona Series
+
+
 
 ## Contributors
 Aurore Archimbaud, Colombe Becquart, Andreas Alfons,  Klaus Nordhausen, Anne M. Ruiz

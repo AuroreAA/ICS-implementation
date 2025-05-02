@@ -50,6 +50,11 @@ packages:
 -   [ICSShiny](https://CRAN.R-project.org/package=ICSShiny) - Archimbaud
     A, May J, Nordhausen K, Ruiz-Gazen A (2017). ICSShiny: ICS via a
     Shiny Application. R package version 0.6.
+    
+   
+  
+![](images/downlaods_ICS_Rpackages.png)  
+    
 
 > Please install the following packages
 
@@ -66,21 +71,21 @@ library(ICSClust)
 
 *Main attributes*
 
-| Description                                                                                                                                             | R - `ics()` , `ics2()` | R - `ICS()`                       | Python |
-|--------------------|-----------------|-----------------|-----------------|
-| Generalized eigenvalues                                                                                                                                 | `@gKurt`               | `$gen_kurtosis`, `gen_kurtosis()` |        |
-| Unmixing matrix or a numeric matrix in which each row contains the coefficients of the linear transformation to the corresponding invariant coordinate. | `@UnMix`               | `$W`                              |        |
-| Scores                                                                                                                                                  | `@Scores`              | `$scores`, `components()`         |        |
+| Description                                                                                                                                             | R - `ics()` , `ics2()` | R - `ICS()`                       |
+|--------------------------|-----------------------|-----------------------|
+| Generalized eigenvalues                                                                                                                                 | `@gKurt`               | `$gen_kurtosis`, `gen_kurtosis()` |
+| Unmixing matrix or a numeric matrix in which each row contains the coefficients of the linear transformation to the corresponding invariant coordinate. | `@UnMix`               | `$W`                              |
+| Scores                                                                                                                                                  | `@Scores`              | `$scores`, `components()`         |
 
 *Methods*
 
-| Description                  | R - `ics()` , `ics2()` | R - `ICS()`                            | Python |
-|------------------|------------------|-------------------|------------------|
-| Print basic information      |                        | `print()`                              |        |
-| Coefficient matrix of ICS    |                        | `coef()`                               |        |
-| Summary                      |                        | `summary()`                            |        |
-| Component scatterplot matrix |                        | `plot()`, `ICSClust::component_plot()` |        |
-| Plots the kurtosis measures  |                        | `screeplot()`, `ICS::select_plot()`    |        |
+| Description                  | R - `ics()` , `ics2()` | R - `ICS()`                            |
+|------------------------|------------------------|-------------------------|
+| Print basic information      |                        | `print()`                              |
+| Coefficient matrix of ICS    |                        | `coef()`                               |
+| Summary                      |                        | `summary()`                            |
+| Component scatterplot matrix |                        | `plot()`, `ICSClust::component_plot()` |
+| Plots the kurtosis measures  |                        | `screeplot()`, `ICS::select_plot()`    |
 
 ### Default values
 
@@ -107,49 +112,59 @@ head(fitted(out_ICS))
 
 ```{r, ICS_attributes}
 # Generalized eigenvalues
+## Extract - solution 1
 out_ICS$gen_kurtosis
+## Extract - solution 2
 gen_kurtosis(out_ICS)
+## Plot
+## Plot - solution 1
 screeplot(out_ICS, type = "bar")
 screeplot(out_ICS, type = "line")
+## Plot - solution 2
 select_plot(out_ICS)
 
 # Extract the component OR scores
+## Extract - solution 1
 head(out_ICS$scores)
+## Extract - solution 2
 head(components(out_ICS))
 head(components(out_ICS, select = 1:2))
 ```
 
-### Different scatter pair
+### Different scatter pairs
 
-| Scatters                              | R - Scatter        | R - `ICS_scatter`                          | Python |
-|------------------|------------------|-------------------|------------------|
-| Covariance                            | `ICS::cov()`       | `ICS::ICS_cov()`                           |        |
-| Fourth-moment covariance              | `ICS::cov4()`      | `ICS::ICS_cov4()`                          |        |
-| One-step M-estimator                  | `ICS::covW()`      | `ICS::ICS_covW()`                          |        |
-| One-step Tyler shape matrix           | `ICS::covAxis()`   | `ICS::ICS_covAxis()`                       |        |
-| Multivariate t-distribution estimator | `ICS::tM()`        | `ICS::ICS_tM()`                            |        |
-| Supervised scatter (quantiles)        | `ICS::scovq()`     | `ICS::ICS_scovq()`                         |        |
-| Minimum Covariance Determinant (MCD)  | `rrcov::CovMcd()`  | `ICSClust::ICS_mcd_raw()`, `ICS_mcd_rwt()` |        |
-| Cauchy location and scatter           | `ICS::tM()`        | `ICSClust::ICS_mlc()`                      |        |
-| Pairwise one-step M-estimate          | `ICSClust::tcov()` | `ICSClust::ICS_tcov()`                     |        |
-| Simple robust estimates               | `ICSClust::ucov()` | `ICSClust::ICS_ucov()`                     |        |
-| Local shape scatter                   | `ICSClust::lcov()` | `ICSClust::ICS_lcov()`                     |        |
+| Scatters                              | R - Scatter        | R - `ICS_scatter`                          |
+|------------------|------------------|-------------------|
+| Covariance                            | `ICS::cov()`       | `ICS::ICS_cov()`                           |
+| Fourth-moment covariance              | `ICS::cov4()`      | `ICS::ICS_cov4()`                          |
+| One-step M-estimator                  | `ICS::covW()`      | `ICS::ICS_covW()`                          |
+| One-step Tyler shape matrix           | `ICS::covAxis()`   | `ICS::ICS_covAxis()`                       |
+| Multivariate t-distribution estimator | `ICS::tM()`        | `ICS::ICS_tM()`                            |
+| Supervised scatter (quantiles)        | `ICS::scovq()`     | `ICS::ICS_scovq()`                         |
+| Minimum Covariance Determinant (MCD)  | `rrcov::CovMcd()`  | `ICSClust::ICS_mcd_raw()`, `ICS_mcd_rwt()` |
+| Cauchy location and scatter           | `ICS::tM()`        | `ICSClust::ICS_mlc()`                      |
+| Pairwise one-step M-estimate          | `ICSClust::tcov()` | `ICSClust::ICS_tcov()`                     |
+| Simple robust estimates               | `ICSClust::ucov()` | `ICSClust::ICS_ucov()`                     |
+| Local shape scatter                   | `ICSClust::lcov()` | `ICSClust::ICS_lcov()`                     |
 
 ```{r, scatters}
 # By default - COV-COV4
 out_ICS <- ICS(X, S1 = ICS_cov, S2 = ICS_cov4)
 out_ICS
-component_plot(out_ICS, clusters = iris$Species)
+component_plot(out_ICS, clusters = iris$Species)+
+  ggtitle(paste(out_ICS$S1_label,  out_ICS$S2_label, sep = "-"))
 
 # MCD0.50-COV
 out_ICS_mcd <- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov)
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)
+component_plot(out_ICS_mcd, clusters = iris$Species)+
+  ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = "-"))
 
 # MCD0.25-COV
 out_ICS_mcd <- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov, S1_args = list(alpha = 0.25))
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)
+component_plot(out_ICS_mcd, clusters = iris$Species)+
+  ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = "-"))
 
 ```
 
@@ -250,11 +265,11 @@ select_plot(out_disc, screeplot = FALSE)
 # indicating the number of components to retain for the dimension reduction
 # step as well as the number of clusters searched for.
 # The default criterion is "med_crit" and clustering method is "kmeans_clust".
-out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
-                nb_select = 1, nb_clusters = 3)
+out <- ICSClust(X, nb_select = 1, nb_clusters = 3)
 out
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 table(iris$Species, out$clusters)
 ```
 
@@ -262,25 +277,33 @@ table(iris$Species, out$clusters)
 
 ```{r, clustering_custom}
 # changing the scatter pair to consider in ICS
-out <- ICSClust(X, nb_select = 1, nb_clusters = 3,
-                ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov))
+out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
+                nb_select = 1, nb_clusters = 3)
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 table(iris$Species, out$clusters)
 
 # changing the criterion for choosing the invariant coordinates
-out <- ICSClust(X, nb_clusters = 3, criterion = "normal_crit",
-                ICS_crit_args = list(level = 0.1, test = "anscombe.test", max_select = NULL))
+out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
+                nb_clusters = 3, criterion = "normal_crit",
+                ICS_crit_args = list(level = 0.1, test = "anscombe.test",
+                                     max_select = NULL))
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
+
 component_plot(out$ICS_out, clusters = factor(out$clusters))
 
 
 # changing the clustering method
-out <- ICSClust(X, nb_clusters = 3, method  = "tkmeans_clust", 
+out <- ICSClust(X, ICS_args = list(S1 = ICS_tcov, S2 = ICS_cov), 
+                nb_clusters = 3, method  = "tkmeans_clust", 
                 clustering_args = list(alpha = 0.1))
 summary(out)
-plot(out)
+plot(out) +
+  ggtitle(paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
+
 
 ```
 
@@ -291,7 +314,6 @@ plot(out)
 ![](images/clipboard-1522426123.png)
 
 ![](images/clipboard-1569861197.png)
-
 
 | Criterion                      | Function(s)                            | Notes                                  |
 |---------------------|----------------------|-----------------------------|
@@ -322,7 +344,7 @@ icsOutlier <- ICS_outlier(HTP, method = "norm_test", test = "agostino.test",
                             n_eig = 10, level_test = 0.05, adjust = TRUE,
                             level_dist = 0.025, n_dist = 10)
 
-plot(icsOutlier)
+plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)
 
 # For using several cores and for using a scatter function from a different package
@@ -370,7 +392,7 @@ icsOutlier <- ICS_outlier(X, ICS_algorithm = "QR",
                           level_test = 0.05, adjust = TRUE,
                             level_dist = 0.001, n_dist = 10)
 print(icsOutlier)
-plot(icsOutlier)
+plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)
 ```
 
@@ -399,5 +421,4 @@ X <- mixture_sim(pct_clusters = c(0.6, 0.4), n = 500, p = 5, delta = 10)
 
 ```{r, plot}
 component_plot(X, clusters = X$cluster)
-
 ```
