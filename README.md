@@ -76,7 +76,7 @@ and Statistics, 33:282–303.
 
 - Archimbaud, A., Nordhausen, K., and Ruiz-Gazen, A. (2018). [ICS for multivariate outlier detection with application to quality control](https://doi.org/10.1016/j.csda.2018.06.011) Computational Statistics & Data Analysis, 128:184–199.
 
-## Authors
+## Contributors
 Aurore Archimbaud, Colombe Becquart, Andreas Alfons,  Klaus Nordhausen, Anne M. Ruiz
 
 ## Contact
