@@ -3,10 +3,10 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 
 
 ## ----libs, message = FALSE-----------------------------------------
-library(ICS)
-library(ICSOutlier)
-library(ICSShiny)
-library(ICSClust)
+library("ICS")
+library("ICSOutlier")
+library("ICSShiny")
+library("ICSClust")
 
 
 ## ----ICS-----------------------------------------------------------
@@ -48,19 +48,19 @@ head(components(out_ICS, select = 1:2))
 # By default - COV-COV4
 out_ICS <- ICS(X, S1 = ICS_cov, S2 = ICS_cov4)
 out_ICS
-component_plot(out_ICS, clusters = iris$Species)+
+component_plot(out_ICS, clusters = iris$Species) +
   ggtitle(paste(out_ICS$S1_label,  out_ICS$S2_label, sep = "-"))
 
 # MCD0.50-COV
 out_ICS_mcd <- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov)
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)+
+component_plot(out_ICS_mcd, clusters = iris$Species) +
   ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = "-"))
 
 # MCD0.25-COV
 out_ICS_mcd <- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov, S1_args = list(alpha = 0.25))
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)+
+component_plot(out_ICS_mcd, clusters = iris$Species) +
   ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = "-"))
 
 
@@ -165,22 +165,22 @@ plot(out) +
 
 
 ## ----HTP-----------------------------------------------------------
-data(HTP)
+data("HTP")
 outliers <- c(581, 619)
 boxplot(HTP)
 
 
 ## ----outlier_detection---------------------------------------------
 icsOutlier <- ICS_outlier(HTP, method = "norm_test", test = "agostino.test",
-                            n_eig = 10, level_test = 0.05, adjust = TRUE,
-                            level_dist = 0.025, n_dist = 10)
+                          n_eig = 10, level_test = 0.05, adjust = TRUE,
+                          level_dist = 0.025, n_dist = 10)
 
 plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)
 
 # For using several cores and for using a scatter function from a different package
 # Using the parallel package to detect automatically the number of cores
-library(parallel)
+library("parallel")
 
 # For demo purpose only small m value, should select the first seven components
 # icsOutlier <- ICS_outlier(HTP, S1 = ICS_mcd_rwt, S2 = ICS_cov,
@@ -199,24 +199,24 @@ library(parallel)
 
 ## ----colli---------------------------------------------------------
 # Import data
-data(HTP3)
+data("HTP3")
 X <- as.matrix(HTP3)
 rownames(X) <- rownames(HTP3)
 ind_outlier <- 32
 
 # Run ICS
 icsOutlier <- try(ICS_outlier(X, level_test = 0.025, adjust = TRUE,
-                            level_dist = 0.025, n_dist = 10))
+                              level_dist = 0.025, n_dist = 10))
 icsOutlier <- ICS_outlier(X, ICS_algorithm = "QR",
                           level_test = 0.05, adjust = TRUE,
-                            level_dist = 0.001, n_dist = 10)
+                          level_dist = 0.001, n_dist = 10)
 print(icsOutlier)
 plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = "-"))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)
 
 
 ## ----shiny---------------------------------------------------------
-# library(ICSShiny)
+# library("ICSShiny")
 # ICSShiny(iris)
 
 
