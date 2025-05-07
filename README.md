@@ -1,7 +1,7 @@
 # Invariant Coordinate Selection (ICS) implementations
 
 This repository is an attempt to present the latest advancements of the different
-implementations of ICS in different programming languages: R, python and Julia.
+implementations of ICS in different programming languages: R, Python and Julia.
 
 
 ## About ICS
@@ -18,8 +18,7 @@ Invariant Coordinate Selection (ICS) is a powerful unsupervised multivariate met
 
 - [ICS](https://cran.r-project.org/web/packages/ICS/index.html) - Nordhausen, K., Alfons, A., Archimbaud, A., Oja, H., Ruiz-Gazen, A. and Tyler, D. E. (2023). R package version 1.4-2.
 
-- [ICSNP](https://CRAN.R-project.org/package=ICSNP) -  Nordhausen K, Sirkia S, Oja H, Tyler D (2023). ICSNP: Tools for Multivariate Nonparametrics. R
-  package version 1.1-2.
+- [ICSNP](https://CRAN.R-project.org/package=ICSNP) -  Nordhausen K, Sirkia S, Oja H, Tyler D (2023). ICSNP: Tools for Multivariate Nonparametrics. R package version 1.1-2.
 
 - [ICtest](https://CRAN.R-project.org/package=ICtest) - 
 Nordhausen K, Oja H, Tyler D, Virta J (2022). ICtest: Estimating and Testing the Number of Interesting
@@ -114,4 +113,4 @@ Aurore Archimbaud, Colombe Becquart, Andreas Alfons,  Klaus Nordhausen, Anne M. 
 
 ## Contact
 
-If you would like to add your work to this repository or contribute to developing new advancements, please open an issue.
+Please open an issue if you would like to add your work to this repository or contribute to developing new advancements.
