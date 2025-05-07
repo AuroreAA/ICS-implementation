@@ -1519,10 +1519,10 @@ via a Shiny Application. R package version 0.6.</p></li>
 <blockquote>
 <p>Please install the following packages</p>
 </blockquote>
-<pre class="r"><code>library(ICS)
-library(ICSOutlier)
-library(ICSShiny)
-library(ICSClust)</code></pre>
+<pre class="r"><code>library(&quot;ICS&quot;)
+library(&quot;ICSOutlier&quot;)
+library(&quot;ICSShiny&quot;)
+library(&quot;ICSClust&quot;)</code></pre>
 </div>
 <div id="ics-for-dimension-reduction" class="section level2">
 <h2>ICS for dimension reduction</h2>
@@ -1722,19 +1722,19 @@ head(components(out_ICS, select = 1:2))</code></pre>
 <pre class="r"><code># By default - COV-COV4
 out_ICS &lt;- ICS(X, S1 = ICS_cov, S2 = ICS_cov4)
 out_ICS
-component_plot(out_ICS, clusters = iris$Species)+
+component_plot(out_ICS, clusters = iris$Species) +
   ggtitle(paste(out_ICS$S1_label,  out_ICS$S2_label, sep = &quot;-&quot;))
 
 # MCD0.50-COV
 out_ICS_mcd &lt;- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov)
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)+
+component_plot(out_ICS_mcd, clusters = iris$Species) +
   ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = &quot;-&quot;))
 
 # MCD0.25-COV
 out_ICS_mcd &lt;- ICS(X, S1 = ICS_mcd_raw, S2 = ICS_cov, S1_args = list(alpha = 0.25))
 out_ICS_mcd
-component_plot(out_ICS_mcd, clusters = iris$Species)+
+component_plot(out_ICS_mcd, clusters = iris$Species) +
   ggtitle(paste(out_ICS_mcd$S1_label,  out_ICS_mcd$S2_label, sep = &quot;-&quot;))</code></pre>
 </div>
 <div id="different-algorithms" class="section level3">
@@ -1940,22 +1940,22 @@ a high quality of the production. All these 902 parts were considered
 functional and have been sold. However the two parts 581 and 619 showed
 defects in use and were returned to the manufacturer by the customer.
 Therefore these two can be considered as outliers.</p>
-<pre class="r"><code>data(HTP)
+<pre class="r"><code>data(&quot;HTP&quot;)
 outliers &lt;- c(581, 619)
 boxplot(HTP)</code></pre>
 <blockquote>
 <p>Try the <code>ICSOutlier::ICS_outlier()</code> function.</p>
 </blockquote>
 <pre class="r"><code>icsOutlier &lt;- ICS_outlier(HTP, method = &quot;norm_test&quot;, test = &quot;agostino.test&quot;,
-                            n_eig = 10, level_test = 0.05, adjust = TRUE,
-                            level_dist = 0.025, n_dist = 10)
+                          n_eig = 10, level_test = 0.05, adjust = TRUE,
+                          level_dist = 0.025, n_dist = 10)
 
 plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = &quot;-&quot;))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)
 
 # For using several cores and for using a scatter function from a different package
 # Using the parallel package to detect automatically the number of cores
-library(parallel)
+library(&quot;parallel&quot;)
 
 # For demo purpose only small m value, should select the first seven components
 # icsOutlier &lt;- ICS_outlier(HTP, S1 = ICS_mcd_rwt, S2 = ICS_cov,
@@ -1980,17 +1980,17 @@ customer. Therefore this part can be considered as outlier.</p>
 <code>ICSOutlier::ICS_outlier()</code> function.</p>
 </blockquote>
 <pre class="r"><code># Import data
-data(HTP3)
+data(&quot;HTP3&quot;)
 X &lt;- as.matrix(HTP3)
 rownames(X) &lt;- rownames(HTP3)
 ind_outlier &lt;- 32
 
 # Run ICS
 icsOutlier &lt;- try(ICS_outlier(X, level_test = 0.025, adjust = TRUE,
-                            level_dist = 0.025, n_dist = 10))
+                              level_dist = 0.025, n_dist = 10))
 icsOutlier &lt;- ICS_outlier(X, ICS_algorithm = &quot;QR&quot;,
                           level_test = 0.05, adjust = TRUE,
-                            level_dist = 0.001, n_dist = 10)
+                          level_dist = 0.001, n_dist = 10)
 print(icsOutlier)
 plot(icsOutlier, main = paste(out$ICS_out$S1_label,  out$ICS_out$S2_label, sep = &quot;-&quot;))
 text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9, col = 2)</code></pre>
@@ -2001,7 +2001,7 @@ text(outliers, icsOutlier$ics_distances[outliers], outliers, pos = 2, cex = 0.9,
 <blockquote>
 <p>Try the <code>ICSShiny</code> function.</p>
 </blockquote>
-<pre class="r"><code># library(ICSShiny)
+<pre class="r"><code># library(&quot;ICSShiny&quot;)
 # ICSShiny(iris)</code></pre>
 </div>
 <div id="utils" class="section level2">
