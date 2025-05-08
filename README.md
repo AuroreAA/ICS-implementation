@@ -38,6 +38,9 @@ Archimbaud, A., Alfons, A., Nordhausen, K., and Ruiz-Gazen, A. (2023a). ICSClust
 Archimbaud A, May J, Nordhausen K, Ruiz-Gazen A (2017). ICSShiny: ICS via a Shiny Application. R package
 version 0.6.
 
+
+- [ICSFun](https://github.com/camillemndn/ICSFun) (experimental) - ICS for functional, distributional, compositional and maybe other types of complex data.
+
 ### Python package
 
 - [ICSpyLab](https://icspylab.readthedocs.io/en/latest/) - Becquart, C., Abdelsameia, A. (2025). ICSpyLab: . Python package version 0.1.0
@@ -50,6 +53,8 @@ version 0.6.
 
 
 ## References with replication files
+
+- Mondon, Camille, Huong Thi Trinh, Anne Ruiz-Gazen, and Christine Thomas-Agnan. 2024. [“ICS for Complex Data with Application to Outlier Detection for Density Data Objects.”](https://www.tse-fr.eu/fr/publications/ics-complex-data-application-outlier-detection-density-data-objects) TSE Working Paper 1585. [Vignette](https://camillemondon.com/dda/articles/ICS.html)
 
 - Archimbaud, A. (2024). [Generalized implementation of invariant coordinate selection with positive semi-definite scatter matrices](https://arxiv.org/abs/2409.02258) arXiv preprint arXiv:2409.02258. [Replication files - R ](https://github.com/AuroreAA/ICS_PSD_Replication)
 
