@@ -54,6 +54,9 @@ version 0.6.
 
 ## References with replication files
 
+- Heinonen, L. and Virta, J. (2025) [A method for sparse and robust independent component analysis](https://arxiv.org/abs/2502.04046) arXiv preprint arXiv:2502.04046 [Replication files - R ](https://github.com/laxuntus/SICS?tab=readme-ov-file)
+
+
 - Mondon, Camille, Huong Thi Trinh, Anne Ruiz-Gazen, and Christine Thomas-Agnan. 2024. [“ICS for Complex Data with Application to Outlier Detection for Density Data Objects.”](https://www.tse-fr.eu/fr/publications/ics-complex-data-application-outlier-detection-density-data-objects) TSE Working Paper 1585. [Vignette](https://camillemondon.com/dda/articles/ICS.html)
 
 - Archimbaud, A. (2024). [Generalized implementation of invariant coordinate selection with positive semi-definite scatter matrices](https://arxiv.org/abs/2409.02258) arXiv preprint arXiv:2409.02258. [Replication files - R ](https://github.com/AuroreAA/ICS_PSD_Replication)
