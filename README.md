@@ -43,33 +43,35 @@ version 0.6.
 
 ### Python package
 
-- [ICSpyLab](https://icspylab.readthedocs.io/en/latest/) - Becquart, C., Abdelsameia, A. (2025). ICSpyLab: . Python package version 0.1.0
+- [ICSpyLab](https://icspylab.readthedocs.io/en/latest/) - Becquart, C., Abdelsameia, A. (2025). ICSpyLab:  Python package version 1.0.0
 
 
-### Julia code
+### Julia library
 
-- [SimultaneousDiagonalisation](https://github.com/CClaassen/SimultaneousDiagonalisation.jl) - Claassen, C. (2023). Generalising invariant coordinate selection to a non-linear dimensionality reduction method. [Master’s thesis.](http://hdl.handle.net/2105/67214)
-
+- [ICSTools.jl](https://github.com/valentint/ICSTools.jl/) - Todorov V (2026) ICSTools.jl: Tools for Exploring Multivariate Data via ICS/ICA in Julia. Julia package version 0.1.1
 
 
 ## References with replication files
 
-- Heinonen, L. and Virta, J. (2025) [A method for sparse and robust independent component analysis](https://arxiv.org/abs/2502.04046) arXiv preprint arXiv:2502.04046 [Replication files - R ](https://github.com/laxuntus/SICS?tab=readme-ov-file)
+- Heinonen, L. and Virta, J. (2026). [A method for sparse and robust independent component analysis](https://doi.org/10.1016/j.jmva.2025.105587) Journal of Multivariate Analysis, 213, 105587. [Replication files - R ](https://github.com/laxuntus/SICS?tab=readme-ov-file)
 
 
-- Mondon, Camille, Huong Thi Trinh, Anne Ruiz-Gazen, and Christine Thomas-Agnan. 2024. [“ICS for Complex Data with Application to Outlier Detection for Density Data Objects.”](https://www.tse-fr.eu/fr/publications/ics-complex-data-application-outlier-detection-density-data-objects) TSE Working Paper 1585. [Vignette](https://camillemondon.com/dda/articles/ICS.html)
+- Archimbaud,A., (2026) [Generalized implementation of invariant coordinate selection with positive semi-definite scatter matrices](https://doi.org/10.1016/j.jmva.2025.105520) Journal of Multivariate Analysis, 211, 105520. [Replication files - R ](https://github.com/AuroreAA/ICS_PSD_Replication)
 
-- Archimbaud, A. (2024). [Generalized implementation of invariant coordinate selection with positive semi-definite scatter matrices](https://arxiv.org/abs/2409.02258) arXiv preprint arXiv:2409.02258. [Replication files - R ](https://github.com/AuroreAA/ICS_PSD_Replication)
-
-
-- Becquart, C., Archimbaud, A., Ruiz-Gazen, A., Prilć, L., and Nordhausen, K. (2024).
-[Invariant Coordinate Selection and Fisher discriminant subspace beyond the case of two groups](https://arxiv.org/abs/2409.17631) arXiv preprint arXiv:2409.17631.
+- Becquart, C., Archimbaud, A., Ruiz-Gazen, A., Prilć, L., and Nordhausen, K. (2026). [Invariant Coordinate Selection and Fisher discriminant subspace beyond the case of two groups](https://doi.org/10.1016/j.jmva.2025.105521) Journal of Multivariate Analysis, 211, 105521.
  [Replication files - R and python](https://github.com/AuroreAA/ICS_FDS-Replication)
- 
+
+- Mondon, C., H. T. Trinh,A. Ruiz-Gazen, and C. Thomas-Agnan (2025). [ICS for complex data with application to outlier detection for density data](https://doi.org/10.1016/j.jmva.2025.105522) Journal of Multivariate Analysis, 105522.[Vignette](https://camillemondon.com/dda/articles/ICS.html)
+
  - Alfons, A., Archimbaud, A., Nordhausen, K., and Ruiz-Gazen, A. (2024). [Tandem clustering with invariant coordinate selection.](https://doi.org/10.1016/j.ecosta.2024.03.002) Econometrics and Statistics, ISSN 2452-3062.
  [Replication files - R](https://github.com/aalfons/TandemICS-Replication)
  
 - Archimbaud, A., Drmac, Z., Nordhausen, K., Radojicic, U. and Ruiz-Gazen, A. (2023). [Numerical Considerations and a New Implementation for Invariant Coordinate Selection.](https://doi.org/10.1137/22M1498759) SIAM Journal on Mathematics of Data Science (SIMODS), Vol.5(1):97–121. [Replication files - R](https://github.com/AuroreAA/NCICS)
+
+
+
+- Claassen, C. (2023). Generalising invariant coordinate selection to a non-linear dimensionality reduction method. [Master’s thesis.](http://hdl.handle.net/2105/67214) [Code - Julia](https://github.com/CClaassen/SimultaneousDiagonalisation.jl)
+
 
 - Ruiz-Gazen, A., Thomas-Agnan, C., Laurent, T., and Mondon, C. (2022). [Detecting outliers in compositional data using Invariant Coordinate Selection.](https://doi.org/10.1007/978-3-031-22687-8_10) In Robust and Multivariate Statistical Methods: Festschrift in Honor of David E. Tyler (pp. 197-224). Cham: Springer International Publishing. [Replication files - R](https://github.com/tibo31/ics_coda)
 
@@ -117,7 +119,7 @@ Series B (Statistical Methodology), 71, no. 3, 549–592.
 
 
 ## Contributors
-Aurore Archimbaud, Colombe Becquart, Andreas Alfons,  Klaus Nordhausen, Anne M. Ruiz
+Aurore Archimbaud, Colombe Becquart, Andreas Alfons,  Klaus Nordhausen, Anne M. Ruiz, Valentin Todorov
 
 ## Contact
 

@@ -2,11 +2,11 @@
 title: Invariant Coordinate Selection (ICS) - R tutorial
 subtitle: |
    | ICS and Related Methods Conference
-   | 6-8 May 2025, Helsinki, Finland
+   | 26-28 May 2026, Helsinki, Finland
 author: 
   name: "Aurore Archimbaud"
   email: "a.archimbaud@tbs-education.fr"
-date: "May 8, 2025"
+date: "May 28, 2026"
 output: 
   html_document:
     fig_caption: yes
