@@ -1,0 +1,300 @@
+---
+title: Invariant Coordinate Selection (ICS) - Julia tutorial
+subtitle: |
+   | ICS and Related Methods Conference
+   | 26-28 May 2026, Helsinki, Finland
+author: 
+  name: "Valentin Todorov"
+  email: "valentin@todorov.at"
+date: "May 28, 2026"
+output: 
+  html_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+editor_options: 
+  chunk_output_type: console
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::knit_hooks$set(purl = knitr::hook_purl)
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+library(JuliaCall)
+julia_setup()
+```
+
+## Introduction
+
+Invariant Coordinate Selection (ICS) is an unsupervised multivariate statistical method used for dimension reduction, outlier detection, and cluster identification. By simultaneously diagonalizing two different scatter matrices, ICS projects high-dimensional data into a new, meaningful coordinate system to easily uncover underlying structures.
+It is particularly useful for dimension reduction. Unlike PCA, ICS is not based on variance maximization but on the maximization/minimization of a generalized kurtosis, and it is invariant not only to orthogonal data transformations but also to any affine transformation.
+
+The ```Julia``` ```ICSTools``` package brings the main functionalities of the ```R``` ```ICS``` package to ```Julia```, offering tools for identifying and selecting invariant coordinates in multivariate data. It includes various covariance estimators, transformation settings, and plotting utilities. Our extensive testing ensures results consistent with the ``R``` package, making it easy for users to transition from ```R``` to ```Julia``` or start fresh with ```ICS```.
+
+The source code of this project is available at our GitHub Repository:  [ICSTools](https://github.com/valentint/ICSTools.jl). The complete documentation of the API with examples can be found at [```ICSTools``` Documentation](https://valentint.github.io/ICSTools.jl/dev/). The results of the test coverage are available at [```ICSTools``` Tests](https://app.codecov.io/github/valentint/ICSTools.jl?branch=main).
+
+
+
+
+## Getting started
+```{julia load-data}
+using ICSTools
+
+# Load dataset
+using Robustbase
+X=wood[:,1:5];
+```
+
+```{julia instantiate-model}
+## Instantiate ICSModel object with all default parameters
+ics = ICSModel();
+show(ics)
+```
+
+```{julia instantiate-alternatives, eval=FALSE}
+## Alternative instantiations: 
+
+## 1. With values for S1 and S2
+ics1 = ICSModel(S1=cov2, S2=cov4);
+
+## 2. With arguments for S2
+ics2 = ICSModel(S1=cov2, S2=covW, S2_args=Dict{Symbol, Any}(:alpha=>1, :cf=>2));
+
+## 3. With algorithm
+ics3 = ICSModel(S1=cov2, S2=covW, algorithm="standard");
+```
+
+```{julia fit-model}
+## Fit the ICS model - equivalent of the function ICS-S3() from the R package ICS
+ICSTools.fit!(ics, X);
+show(ics)
+```
+
+```{julia predict}
+## Predict using the fitted model
+scores=predict(ics, X);
+scores
+```
+
+The following example illustrates how to plot the transformed/predicted data (invariant components) using ```component_plot2()``` and the kurtosis of the invariant components (corresponding to the eigenvalues of the joint diagonalization problem) using ```scree_plot()```.
+
+```{julia plots}
+## scree plot and 2-dimensional component plot
+using Plots
+gr()
+scree_plot(ics)
+component_plot2(ics)                # by default the first two components
+component_plot2(ics, select=[3,4])  # select components 3 and 4
+```
+
+```{julia plots2}
+using DataFrames
+using GLMakie
+using PairPlots
+ss = DataFrame(scores, ["IC$i" for i=1:size(scores,2)]);
+fig = pairplot(ss, fullgrid=true);
+
+fig = pairplot(
+    ss => (PairPlots.Scatter(markersize=10, color=:blue),
+          PairPlots.MarginDensity(color=:red)), 
+          fullgrid=true
+)
+
+save("wood-scores.png", fig)
+```
+![](images/wood-scores.png){width=250px} 
+
+
+## The scatters
+
+## Example applications
+
+### The Penguins data set
+Data on adult penguins covering three species found on three islands in the Palmer Archipelago, Antarctica, including their size (flipper length, body mass, bill dimensions), and sex.  The data set ```penguins``` in ```R``` is a data frame with 344 rows and 8 variables. It is also available in ```Julia``` as a package ```PalmerPenguins.jl```.
+
+Be careful there are missing values so we could consider only 342 observations. However, there are further 9 observations for which the variable ```sex``` has ```NA```, therefore it is better to work with the remaining 333 observations.
+
+The idea of the penguins data set is to replace the well known ```iris``` data set which is used throughout data science, education statistical software and machine learning as test and illustration data set. The structure of ```penguins``` is similar to that of ```iris``` but still there are several essential differences: There are several grouping variables (species, island, sex and year), the sample sizes of the groups (152-68-124) are not equal as in iris (3x50), there are a few observations with missing values.
+
+Table 1. Sample sizes for ```iris``` and ```penguins```. Data in penguins can be further grouped by island and study year.
+
+| Iris species | Sample size | Penguin species | Female | Male | NA |
+| :--- | :---: | ---: |---: |---: |---: |
+| Left | Center | Left | Center | Center | Center |
+| setosa | 50 | Adélie | 73 | 73 | 6 |
+| versicolor | 50 | Chinstrap | 34 | 34 | 0 |
+| virginica | 50 | Gentoo | 58 | 61 | 5 |
+
+We start by downloading the data set from ```R```:
+
+```{julia penguins-load}
+## Load the penguins data from R
+using DataFrames
+using RCall
+Robj = R"data('penguins', package='datasets'); x=penguins";
+
+## Copy the contents of an R object into a corresponding canonical Julia type        
+penguins = rcopy(Robj)
+size(penguins)
+penguins = dropmissing(penguins); # drop the missing values
+size(penguins)
+X = penguins[:,3:6];              # select only the quantative variables
+```
+
+```{julia penguins-tabulate}
+## Tabulate species by sex
+gdf = groupby(penguins, [:species, :sex]);
+tt = combine(gdf, nrow);
+show(IOContext(stdout, :limit=>false), MIME"text/plain"(), tt)
+```
+Now we apply ICS with scaters ```tcov``` and ```cov2```, transform the model using the penguin data and plot the ```scree_plot``` (analogue to eigenvalues screeplot in PCA).
+
+```{julia penguins-ICS}
+using ICSTools
+ics = ICSModel(S1=tcov, S2=cov2);
+scores = fit_predict!(ics, X);
+
+using Plots
+gr()
+scree_plot(ics)
+```
+
+For convineance, to look at the data taking the grouping by species and by sex into account we convert the categorical arrays into string arrays.
+
+```{julia penguins-grouping}
+## Convert the categorical arrays species and sex to string arrays
+using CategoricalArrays
+species = unwrap.(penguins.species);
+sex = unwrap.(penguins.sex);
+```
+
+Then we plot the first two IC components grouping the data by species (the different colours represent the different species). We see that the species are very well separated.
+```{julia penguins-plot-species}
+## Convert the categorical arrays species and sex to string arrays
+component_plot2(ics, clusters=species)
+```
+
+Next, we plot the fourth IC component grouping the data by sex . We see that the sex of the penguins is very well separated on the fourth IC.
+```{julia penguins-plot-sex}
+## Convert the categorical arrays species and sex to string arrays
+component_plot2(ics, clusters=sex, select=[4])
+```
+
+Finally, we look at the pair plots of the IC scores of the penguins data. 
+This function (```component_plot()```) is not implemented in the ```ICSTools``` package, therefore we call directly the ```pairplot()``` function. The grouping is by species.
+```{julia penguins-pairplots}
+using DataFrames
+using GLMakie
+using PairPlots
+
+ss = DataFrame(scores, ["IC$i" for i=1:size(scores,2)]);
+
+fig=pairplot(ss[species .== "Adelie", :] => 
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss[species .== "Gentoo", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss[species .== "Chinstrap", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+          fullgrid=true)
+```
+![](images/penguins-plot-species.png){width=250px} 
+
+Now we repeat the same with grouping by sex.
+```{julia penguins-pairplots-sex}
+fig=pairplot(ss[sex .== "female", :] => 
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss[sex .== "male", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+          fullgrid=true)
+```
+![](images/penguins-plot-sex.png){width=250px} 
+
+### Cluster analysis
+The Philips data set was first introduced in the robustness
+literature in Rousseeuw and Van Driessen (1999) as a motivation
+example for developing the FASTMCD algorithm.
+Later it was used as an example in a number of papers and
+presentations (Maronna and Zamar, 2002; Willems et al., 2009).
+
+The data set is available in the ```R``` package ```cellWise```. For each of ```n = 677``` 
+parts (metal plates molded by a press) ```p = 9``` characteristics were measured.
+The aim of the multivariate analysis was to gain insight in the
+interrelations between the variables and to investigate if any
+deformations or abnormalities have occurred during the
+production process.
+There are two groups of outliers (as analyzed by the Philips engineers and demosntrated by Rousseeuw et al. (1999):
+the first 100 observations and the 75 observations with indexes 491 to 565. The thirsd group are the 502 regular observations. 
+
+We start by downloading the Philips data set from ```R```:
+
+```{julia philips-load, results='hide'}
+## Load the penguins data from R
+using DataFrames
+using RCall
+RObj = R"data('data_philips', package='cellWise'); x=data_philips";
+
+## Copy the contents of an R object into a corresponding canonical Julia type        
+X = rcopy(RObj)
+size(X)
+
+## Define the clusters
+clusters = repeat(["Group1"], outer=size(X, 1))
+clusters[1:100] .= "Group2"
+clusters[491:565] .= "Group3"
+```
+
+Now we apply ICS with scaters ```mcd_raw``` and ```cov2```, transform the model using the philips data and plot the ```scree_plot``` (analogue to eigenvalues screeplot in PCA).
+```{julia philips-model}
+using ICSTools
+ics = ICSModel(S1=mcd_raw, S2=cov2);
+scores = fit_predict!(ics, X);
+
+using Plots
+gr()
+scree_plot(ics)
+```
+
+Show the clusters in the first two ICs
+```{julia philips-clusters}
+component_plot2(ics, clusters=clusters)
+```
+
+Show the pairplots of the first 3 and th elast three ICs.
+```{julia philips-pairs}
+using DataFrames
+using GLMakie
+using PairPlots
+
+ss = DataFrame(scores[:,[1, 2, 3, 7, 8, 9]], ["IC$i" for i=[1, 2, 3, 7, 8, 9]]);
+
+fig=pairplot(ss[clusters .== "Group1", :] => 
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss[clusters .== "Group2", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss[clusters .== "Group2", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+          fullgrid=true)
+
+```
+
+![](images/philips-pairs.png){width=250px} 
+
+## Julia packages: Technical issues
+
+### Documentation
+
+### Testing
+
+### Built-in data sets
+
+
