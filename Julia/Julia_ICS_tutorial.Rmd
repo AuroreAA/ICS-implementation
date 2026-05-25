@@ -101,8 +101,6 @@ fig = pairplot(
           PairPlots.MarginDensity(color=:red)), 
           fullgrid=true
 )
-
-save("wood-scores.png", fig)
 ```
 ![](images/wood-scores.png){width=250px} 
 
@@ -123,7 +121,7 @@ Table 1. Sample sizes for ```iris``` and ```penguins```. Data in penguins can be
 | Iris species | Sample size | Penguin species | Female | Male | NA |
 | :--- | :---: | ---: |---: |---: |---: |
 | Left | Center | Left | Center | Center | Center |
-| setosa | 50 | Adélie | 73 | 73 | 6 |
+| setosa | 50 | Adelie | 73 | 73 | 6 |
 | versicolor | 50 | Chinstrap | 34 | 34 | 0 |
 | virginica | 50 | Gentoo | 58 | 61 | 5 |
 
@@ -140,7 +138,7 @@ penguins = rcopy(Robj)
 size(penguins)
 penguins = dropmissing(penguins); # drop the missing values
 size(penguins)
-X = penguins[:,3:6];              # select only the quantative variables
+X = penguins[:,3:6];              # select only the quantitative variables
 ```
 
 ```{julia penguins-tabulate}
@@ -248,9 +246,14 @@ size(X)
 clusters = repeat(["Group1"], outer=size(X, 1))
 clusters[1:100] .= "Group2"
 clusters[491:565] .= "Group3"
+
+## We will use these to validate the k-means
+true_labels = fill(1, size(X, 1))
+true_labels[1:100] .= 2
+true_labels[491:565] .= 3
 ```
 
-Now we apply ICS with scaters ```mcd_raw``` and ```cov2```, transform the model using the philips data and plot the ```scree_plot``` (analogue to eigenvalues screeplot in PCA).
+Now we apply ICS with scaters ```mcd_raw``` and ```cov2```, transform the model using the Philips data and plot the ```scree_plot``` (analogue to eigenvalues scree plot in PCA).
 ```{julia philips-model}
 using ICSTools
 ics = ICSModel(S1=mcd_raw, S2=cov2);
@@ -266,13 +269,14 @@ Show the clusters in the first two ICs
 component_plot2(ics, clusters=clusters)
 ```
 
-Show the pairplots of the first 3 and th elast three ICs.
-```{julia philips-pairs}
+Show the pair plots of the first 3 and the last three ICs.
+```{julia philips-pairs, eval=FALSE}
 using DataFrames
 using GLMakie
 using PairPlots
 
 ss = DataFrame(scores[:,[1, 2, 3, 7, 8, 9]], ["IC$i" for i=[1, 2, 3, 7, 8, 9]]);
+ss_raw = DataFrame(X[:,[1, 2, 3, 7, 8, 9]], ["X$i" for i=[1, 2, 3, 7, 8, 9]]);
 
 fig=pairplot(ss[clusters .== "Group1", :] => 
              (PairPlots.Scatter(markersize=10),
@@ -280,7 +284,7 @@ fig=pairplot(ss[clusters .== "Group1", :] =>
             ss[clusters .== "Group2", :] =>
              (PairPlots.Scatter(markersize=10),
               PairPlots.MarginDensity()), 
-            ss[clusters .== "Group2", :] =>
+            ss[clusters .== "Group3", :] =>
              (PairPlots.Scatter(markersize=10),
               PairPlots.MarginDensity()), 
           fullgrid=true)
@@ -288,6 +292,75 @@ fig=pairplot(ss[clusters .== "Group1", :] =>
 ```
 
 ![](images/philips-pairs.png){width=250px} 
+
+Now show the pair plots of the original data. We cannot observe any structure.
+```{julia philips-pairs-raw, eval=FALSE}
+fig_raw=pairplot(ss_raw[clusters .== "Group1", :] => 
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss_raw[clusters .== "Group2", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss_raw[clusters .== "Group3", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+          fullgrid=true)
+```
+
+![](images/philips-pairs_raw.png){width=250px} 
+Next, let us look at the PCA. Again there is no visible structure.
+```{julia philips-pairs-pca, eval=FALSE}
+using MultivariateStats
+Xtr=Matrix(X)'
+M = fit(PCA, Xtr; maxoutdim=9)
+Ytr = MultivariateStats.predict(M, Xtr)'
+ss_pca = DataFrame(Ytr[:,[1, 2, 3, 5, 6, 7]], ["PC$i" for i=[1, 2, 3, 5, 6, 7]]);
+
+fig_pca=pairplot(ss_pca[clusters .== "Group1", :] => 
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss_pca[clusters .== "Group2", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+            ss_pca[clusters .== "Group3", :] =>
+             (PairPlots.Scatter(markersize=10),
+              PairPlots.MarginDensity()), 
+          fullgrid=true)
+```
+
+![](images/philips-pairs_pca.png){width=250px} 
+
+Now let us turn the exploratory observations on the three pair plots to more concrete numbers. We can run k-means clustering on the raw data, the (first 3) PCA scores and the (first 3) ICs. Since we know the true clusters, we can compute a suitable external validation measure like the Adjusted Rand index and compare them.
+
+```{julia philips-ari, results='hide'}
+## 1. Do k-means on the raw data
+using Clustering
+result = kmeans(X', 3);
+ri, ari_raw = randindex(result.assignments, true_labels);
+ari_raw
+
+## Do k-means on the first 3 ICs
+using Clustering
+Y=scores[:,1:3];
+result_ICS = kmeans(Y', 3);
+ri, ari_ICS = randindex(result_ICS.assignments, true_labels);
+ari_ICS
+
+##  Do k-means on the first 3 PCs
+using MultivariateStats
+using Clustering
+Xtr=Matrix(X)';
+M = fit(PCA, Xtr; maxoutdim=9);
+Ytr = MultivariateStats.predict(M, Xtr)';
+Ytr3 = Ytr[:,1:3]';
+result_PCA = kmeans(Ytr3, 3);
+ri, ari_PCA = randindex(result_PCA.assignments, true_labels);
+ari_PCA
+```
+
+```{julia philips-ari-show}
+println("ari_raw:\t\t", ari_raw, "\nari_PCA_3:\t", ari_PCA, "\nari_ICS_3:\t", ari_ICS)
+```
 
 ## Julia packages: Technical issues
 
