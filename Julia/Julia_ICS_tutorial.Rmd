@@ -34,7 +34,11 @@ It is particularly useful for dimension reduction. Unlike PCA, ICS is not based 
 
 The ```Julia``` ```ICSTools``` package brings the main functionalities of the ```R``` ```ICS``` package to ```Julia```, offering tools for identifying and selecting invariant coordinates in multivariate data. It includes various covariance estimators, transformation settings, and plotting utilities. Our extensive testing ensures results consistent with the ``R``` package, making it easy for users to transition from ```R``` to ```Julia``` or start fresh with ```ICS```.
 
-The source code of this project is available at our GitHub Repository:  [ICSTools](https://github.com/valentint/ICSTools.jl). The complete documentation of the API with examples can be found at [```ICSTools``` Documentation](https://valentint.github.io/ICSTools.jl/dev/). The results of the test coverage are available at [```ICSTools``` Tests](https://app.codecov.io/github/valentint/ICSTools.jl?branch=main).
+The source code of this project is available at our GitHub Repository:  [ICSTools](https://github.com/valentint/ICSTools.jl). 
+The complete documentation of the API with examples can be found at [```ICSTools``` Documentation](https://valentint.github.io/ICSTools.jl/dev/). 
+
+The results of the test coverage are available at 
+[```ICSTools``` Tests](https://app.codecov.io/github/valentint/ICSTools.jl?branch=main).
 
 
 ```{julia install-packages, results='hide', eval=FALSE}
@@ -47,7 +51,9 @@ Pkg.add("GLMakie"); using GLMakie       # for pairplots() and related
 Pkg.add("PairPlots"); using PairPlots   # for pairplots() and related
 Pkg.add("RCall"); using RCall           # To access R data sets; to perform tests
 Pkg.add("Clustering"); using Clustering # for kmeans() and randindex()
-
+Pkg.add("Test"); using Testing          # for testing against R
+Pkg.add("BenchmarkTools"); using BenchmarkTools # for benchmarking scatter functions
+Pkg.add("Random");Random                # for testing and benchmarking
 ```
 
 
@@ -119,13 +125,131 @@ save("images/wood-scores.png", fig)
 ```
 ![](images/wood-scores.png)
 
-
 ## The scatters
+ICS is based on  simultaneously diagonalizing two different scatter matrices. The ICSTools package contains a number of implementations of scatter matrices, almost all scatters that are available in the different packages in ```R```.
+Each scatter function takes a data matrix or a data frame and returns a structure with the following fields:
+
+* (optional) location
+
+* scatter matrix
+
+* label
+
+
+```{julia show-function, echo=FALSE, results='hide'}
+
+## This is workaround for the errors in the show function for scatter
+##in the current version of ICSTools
+
+using ICSTools
+
+function Base.show(io::IO, mime::MIME"text/plain", obj::ICSTools.Scatter)
+    #   you can add IO options if you want
+    #multiline = get(io, :multiline, true)
+    #print_object(io, obj, multiline = multiline)
+
+    println(io, "-> Scatter: " , obj.label)
+    
+    if !isnothing(obj.location)
+        println(io, "Location:")
+        println(IOContext(io, :compact=>true), obj.location)
+    end
+
+    println(io)
+    println(io, "Scatter:")
+    Base.show(io, mime, obj.scatter)
+end
+```
+
+```{julia cov4}
+using ICSTools
+
+# Load dataset
+using Robustbase
+X=wood[:,1:5];
+
+cov4(X)
+```
+
+Some scatter functions can take optional arguments. All functions are implemented in the ```ICSTools``` package, ```mcd_raw()``` and ```mcd_rew()``` use the Julia package ```Robustbase``` for the implementation of the FASTMCD algorithm.
+
+```{julia covW}
+covW(X, alpha=2, cf=4)
+```
+
+When scatter functions are used as arguments to ```ICSModel()```, the optional arguments can be passed as data dictionaries:
+
+```{julia ICSModel, eval=FALSE}
+ics1 = ICSModel(S1=cov2, S2=covW, S2_args=Dict{Symbol, Any}(:alpha=>2, :cf=>4));
+
+ics2 = ICSModel(S1=mcd_raw, S2=cov2, S1_args=Dict{Symbol, Any}(:nsamp=>1000, :alpha=>0.75));
+```
+
+Table 1. List of scatter functions implemented in the ```Julia```package ```ICSTool```.
+
+|      | Function | Location | Optional parameters |
+| :--- | :---: | :---: |:--- |
+| Covariance | ```cov2``` | Yes | - |
+| Fourth-moment covariance | ```cov4``` | Yes | -  | 
+| One-step M-estimator | ```covW``` | Yes | ```alpha```, ```cf``` |
+| One-step Tyler shape matrix | ```covAxis``` | Yes | - |
+| Multivariate t-distribution estimator | ```tM```  | Yes | ```alg```, ```mu_init```, ```V_init```, ```gamma_init```, ```eps```, ```maxiter``` |
+| Cauchy location and scatter           | ```mlc``` | Yes | ```alg```, ```mu_init```, ```V_init```, ```gamma_init```, ```eps```, ```maxiter``` |
+| Raw MCD        | ```mcd_raw``` | Yes | ```alpha```,```nsamp``` |
+| Reweighted MCD | ```mcd_rwt``` | Yes | ```alpha```, ```nsamp``` |
+| Pairwise one-step M-estimate | ```tcov``` | No | ```beta``` |
+| Local shape scatter | ```lcov``` | No | ```proportion```, ```mscatter```, ```mcdalpha```, ```covstandard``` |
+
+### Testing against ```R```
+
+Since all scatter functions are also available in several different ```R``` Packages we can conveniently test the by running the ```R``` code comparing the results. An example is given below.
+
+```{julia test, results='hide', eval=FALSE}
+using DataFrames
+using RCall
+using Test
+
+## Load R libraries 
+R"library(ICSOutlier)";
+R"library(ICSClust)";
+
+cc=R"ICS_cov4($X, location='mean')";    # call cov4() in R
+ss=cov4(X);                             # call cov4() in Julia
+```
+
+```{julia test-compare, eval=FALSE}
+## Compare the returned labels, locations and scatters
+@test(ss.label == rcopy(cc)[Symbol("label")])
+@test(isapprox(ss.location, rcopy(cc)[Symbol("location")]))
+@test(isapprox(ss.scatter, rcopy(cc)[Symbol("scatter")]))
+```
+
+### Benchmarking
+
+One of the main advantages of Julia``` is the so called solving of the "two languages problem", i.e. in order to achive satifactury computational speed in ```R``` or ```Python``` it is necessary t program critical parts of the code in a native compiled languages like ```C``` or ```C++```.This is not neessary in ```Julia`` - everything is written in the same language.
+A good example for this is the scatter function ```tcov()``` which in ```R``` is written in ```C++```. To illustrate this we will benchmark this functions.
+
+```{julia benchmark}
+using BenchmarkTools
+using ICSTools
+using Random
+
+X = rand(1000, 10);
+
+bb1 = @benchmark tcov(X) samples=19;
+bb1
+
+```
+
+The following graph presents the timing of two versions of the function ```tcov()``` in ```Julia```, the first is straightforward translation of the ```C++``` code in the ```R``` package ```ICSClust```, the second is optimized for ```Julia```.
+
+![](images/timing-tcov.png)
+
+
 
 ## Example applications
 
 ### The Penguins data set
-
 
 
 Data on adult penguins covering three species found on three islands in the Palmer Archipelago, Antarctica, including their size (flipper length, body mass, bill dimensions), and sex.  The data set ```penguins``` in ```R``` is a data frame with 344 rows and 8 variables. It is also available in ```Julia``` as a package ```PalmerPenguins.jl```.
@@ -137,8 +261,7 @@ The idea of the penguins data set is to replace the well known ```iris``` data s
 Table 1. Sample sizes for ```iris``` and ```penguins```. Data in penguins can be further grouped by island and study year.
 
 | Iris species | Sample size | Penguin species | Female | Male | NA |
-| :--- | :---: | ---: |---: |---: |---: |
-| Left | Center | Left | Center | Center | Center |
+| :--- | :---:  | :--- | :---:  | :---: | :---:  |
 | setosa | 50 | Adélie | 73 | 73 | 6 |
 | versicolor | 50 | Chinstrap | 34 | 34 | 0 |
 | virginica | 50 | Gentoo | 58 | 61 | 5 |

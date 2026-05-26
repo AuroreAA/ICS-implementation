@@ -14,7 +14,9 @@ julia_setup()
 ## Pkg.add("PairPlots"); using PairPlots   # for pairplots() and related
 ## Pkg.add("RCall"); using RCall           # To access R data sets; to perform tests
 ## Pkg.add("Clustering"); using Clustering # for kmeans() and randindex()
-## 
+## Pkg.add("Test"); using Testing          # for testing against R
+## Pkg.add("BenchmarkTools"); using BenchmarkTools # for benchmarking scatter functions
+## Pkg.add("Random");Random                # for testing and benchmarking
 
 ## using ICSTools
 ## 
@@ -65,6 +67,69 @@ julia_setup()
 ## )
 ## 
 ## save("images/wood-scores.png", fig)
+
+## 
+## ## This is workaround for the errors in the show function for scatter
+## ##in the current version of ICSTools
+## 
+## using ICSTools
+## 
+## function Base.show(io::IO, mime::MIME"text/plain", obj::ICSTools.Scatter)
+##     #   you can add IO options if you want
+##     #multiline = get(io, :multiline, true)
+##     #print_object(io, obj, multiline = multiline)
+## 
+##     println(io, "-> Scatter: " , obj.label)
+## 
+##     if !isnothing(obj.location)
+##         println(io, "Location:")
+##         println(IOContext(io, :compact=>true), obj.location)
+##     end
+## 
+##     println(io)
+##     println(io, "Scatter:")
+##     Base.show(io, mime, obj.scatter)
+## end
+
+## using ICSTools
+## 
+## # Load dataset
+## using Robustbase
+## X=wood[:,1:5];
+## 
+## cov4(X)
+
+## covW(X, alpha=2, cf=4)
+
+## ics1 = ICSModel(S1=cov2, S2=covW, S2_args=Dict{Symbol, Any}(:alpha=>2, :cf=>4));
+## 
+## ics2 = ICSModel(S1=mcd_raw, S2=cov2, S1_args=Dict{Symbol, Any}(:nsamp=>1000, :alpha=>0.75));
+
+## using DataFrames
+## using RCall
+## using Test
+## 
+## ## Load R libraries
+## R"library(ICSOutlier)";
+## R"library(ICSClust)";
+## 
+## cc=R"ICS_cov4($X, location='mean')";    # call cov4() in R
+## ss=cov4(X);                             # call cov4() in Julia
+
+## ## Compare the returned labels, locations and scatters
+## @test(ss.label == rcopy(cc)[Symbol("label")])
+## @test(isapprox(ss.location, rcopy(cc)[Symbol("location")]))
+## @test(isapprox(ss.scatter, rcopy(cc)[Symbol("scatter")]))
+
+## using BenchmarkTools
+## using ICSTools
+## using Random
+## 
+## X = rand(1000, 10);
+## 
+## bb1 = @benchmark tcov(X) samples=19;
+## bb1
+## 
 
 ## ## Load the penguins data from R
 ## using DataFrames
