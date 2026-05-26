@@ -5,6 +5,17 @@ library(JuliaCall)
 julia_setup()
 
 
+## import Pkg;
+## Pkg.add("Robustbase"); using Robustbase
+## Pkg.add("ICSTools"); using ICSTools
+## Pkg.add("Plots"); using Plots
+## Pkg.add("DataFrames"); using DataFrames
+## Pkg.add("GLMakie"); using GLMakie       # for pairplots() and related
+## Pkg.add("PairPlots"); using PairPlots   # for pairplots() and related
+## Pkg.add("RCall"); using RCall           # To access R data sets; to perform tests
+## Pkg.add("Clustering"); using Clustering # for kmeans() and randindex()
+## 
+
 ## using ICSTools
 ## 
 ## # Load dataset
@@ -53,7 +64,7 @@ julia_setup()
 ##           fullgrid=true
 ## )
 ## 
-## save("wood-scores.png", fig)
+## save("images/wood-scores.png", fig)
 
 ## ## Load the penguins data from R
 ## using DataFrames
@@ -61,11 +72,11 @@ julia_setup()
 ## Robj = R"data('penguins', package='datasets'); x=penguins";
 ## 
 ## ## Copy the contents of an R object into a corresponding canonical Julia type
-## penguins = rcopy(Robj)
+## penguins = rcopy(Robj);
 ## size(penguins)
 ## penguins = dropmissing(penguins); # drop the missing values
 ## size(penguins)
-## X = penguins[:,3:6];              # select only the quantative variables
+## X = penguins[:,3:6];              # select only the quantitative variables
 
 ## ## Tabulate species by sex
 ## gdf = groupby(penguins, [:species, :sex]);
@@ -75,7 +86,7 @@ julia_setup()
 ## using ICSTools
 ## ics = ICSModel(S1=tcov, S2=cov2);
 ## scores = fit_predict!(ics, X);
-## 
+
 ## using Plots
 ## gr()
 ## scree_plot(ics)
@@ -107,6 +118,7 @@ julia_setup()
 ##              (PairPlots.Scatter(markersize=10),
 ##               PairPlots.MarginDensity()),
 ##           fullgrid=true)
+## save("images/penguins-plot-species.png", fig)
 
 ## fig=pairplot(ss[sex .== "female", :] =>
 ##              (PairPlots.Scatter(markersize=10),
@@ -115,6 +127,7 @@ julia_setup()
 ##              (PairPlots.Scatter(markersize=10),
 ##               PairPlots.MarginDensity()),
 ##           fullgrid=true)
+## save("images/penguins-plot-sex.png", fig)
 
 ## ## Load the penguins data from R
 ## using DataFrames
@@ -162,7 +175,7 @@ julia_setup()
 ##              (PairPlots.Scatter(markersize=10),
 ##               PairPlots.MarginDensity()),
 ##           fullgrid=true)
-## 
+## save("images/philips-pairs.png", fig)
 
 ## fig_raw=pairplot(ss_raw[clusters .== "Group1", :] =>
 ##              (PairPlots.Scatter(markersize=10),
@@ -174,6 +187,7 @@ julia_setup()
 ##              (PairPlots.Scatter(markersize=10),
 ##               PairPlots.MarginDensity()),
 ##           fullgrid=true)
+## save("images/philips-raw.png", fig_raw)
 
 ## using MultivariateStats
 ## Xtr=Matrix(X)'
@@ -191,6 +205,7 @@ julia_setup()
 ##              (PairPlots.Scatter(markersize=10),
 ##               PairPlots.MarginDensity()),
 ##           fullgrid=true)
+## save("images/philips-pairs_pca.png", fig_pca)
 
 ## ## 1. Do k-means on the raw data
 ## using Clustering
