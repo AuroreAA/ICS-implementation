@@ -1,12 +1,11 @@
 ## ----setup, include=FALSE-----------------------------------------------------
-knitr::knit_hooks$set(purl = knitr::hook_purl)
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 library(JuliaCall)
 julia_setup()
 
 
 ## import Pkg;
-## Pkg.add("Robustbase"); using Robustbase
+## Pkg.add("Robustbase"); using robustbase # for MCD
 ## Pkg.add("ICSTools"); using ICSTools
 ## Pkg.add("Plots"); using Plots
 ## Pkg.add("DataFrames"); using DataFrames
@@ -39,12 +38,8 @@ julia_setup()
 ## ## 3. With algorithm
 ## ics3 = ICSModel(S1=cov2, S2=covW, algorithm="standard");
 
-## ## Fit the ICS model - equivalent of the function ICS-S3() from the R package ICS
-## ICSTools.fit!(ics, X);
+## scores = fit_predict!(ics, X);
 ## show(ics)
-
-## ## Predict using the fitted model
-## scores=predict(ics, X);
 ## scores
 
 ## ## scree plot and 2-dimensional component plot

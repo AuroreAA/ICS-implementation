@@ -21,7 +21,6 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::knit_hooks$set(purl = knitr::hook_purl)
 knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 library(JuliaCall)
 julia_setup()
@@ -32,18 +31,27 @@ julia_setup()
 Invariant Coordinate Selection (ICS) is an unsupervised multivariate statistical method used for dimension reduction, outlier detection, and cluster identification. By simultaneously diagonalizing two different scatter matrices, ICS projects high-dimensional data into a new, meaningful coordinate system to easily uncover underlying structures.
 It is particularly useful for dimension reduction. Unlike PCA, ICS is not based on variance maximization but on the maximization/minimization of a generalized kurtosis, and it is invariant not only to orthogonal data transformations but also to any affine transformation.
 
-The ```Julia``` ```ICSTools``` package brings the main functionalities of the ```R``` ```ICS``` package to ```Julia```, offering tools for identifying and selecting invariant coordinates in multivariate data. It includes various covariance estimators, transformation settings, and plotting utilities. Our extensive testing ensures results consistent with the ``R``` package, making it easy for users to transition from ```R``` to ```Julia``` or start fresh with ```ICS```.
+The ```Julia``` ```ICSTools``` package brings the main functionalities of the ```R``` ```ICS``` package to ```Julia```, offering tools for identifying and selecting invariant coordinates in multivariate data. It includes various covariance estimators, transformation settings, and plotting utilities. Our extensive testing ensures results consistent with the ```R``` package, making it easy for users to transition from ```R``` to ```Julia``` or start fresh with ```ICS```.
 
-The source code of this project is available at our GitHub Repository:  [ICSTools](https://github.com/valentint/ICSTools.jl). 
+The source code of the ```Julia``` package ```ICSTools``` is available at our GitHub Repository:  [ICSTools](https://github.com/valentint/ICSTools.jl). 
+
 The complete documentation of the API with examples can be found at [```ICSTools``` Documentation](https://valentint.github.io/ICSTools.jl/dev/). 
 
 The results of the test coverage are available at 
 [```ICSTools``` Tests](https://app.codecov.io/github/valentint/ICSTools.jl?branch=main).
 
+To run the code from this tutorial you will need to install ```Julia```. The recommended way of installing ```Julia``` is based on ```juliaup``` which (on Windows) can be found [here](https://apps.microsoft.com/detail/9njnww8pvkmn?hl=fi-FI&gl=FI).
+Further you will need an IDE for more comfortable running of the code - the preferred one is [VSCode](https://code.visualstudio.com/) with installed ```Julia``` plugin which can be obtained from [here](https://marketplace.visualstudio.com/items?itemName=julialang.language-julia).
+
+The ```R Markdown``` file of the tutorial could be run in ```RStudio``` but you will need also ```R``` installed.
+
+In [this GitHub repository](https://github.com/AuroreAA/ICS-implementation) is available also a [Pluto](https://plutojl.org/) [notebook](https://github.com/AuroreAA/ICS-implementation/blob/main/Julia/ICS.Pluto) containing a part of the tutorial. 
+
+All the code chunks of the repository are extracted into a [```Julia``` script](https://github.com/AuroreAA/ICS-implementation/blob/main/Julia/Julia_ICS_tutorial.jl).
 
 ```{julia install-packages, results='hide', eval=FALSE}
 import Pkg;
-Pkg.add("Robustbase"); using Robustbase
+Pkg.add("Robustbase"); using robustbase # for MCD
 Pkg.add("ICSTools"); using ICSTools
 Pkg.add("Plots"); using Plots
 Pkg.add("DataFrames"); using DataFrames
@@ -85,15 +93,14 @@ ics2 = ICSModel(S1=cov2, S2=covW, S2_args=Dict{Symbol, Any}(:alpha=>1, :cf=>2));
 ics3 = ICSModel(S1=cov2, S2=covW, algorithm="standard");
 ```
 
-```{julia fit-model}
-## Fit the ICS model - equivalent of the function ICS-S3() from the R package ICS
-ICSTools.fit!(ics, X);
-show(ics)
-```
+With the function ```fit_predict!()``` we will fit the ICS model and transform the data - equivalent to 
+the function ```ICS-S3()``` from the ```R``` package ```ICS```.
+Alternatively, this can be done in two separate steps: ```fit!()``` and ```predict!()```, 
+as is usually done in machine learning pipelines.
 
-```{julia predict}
-## Predict using the fitted model
-scores=predict(ics, X);
+```{julia fit-model}
+scores = fit_predict!(ics, X);
+show(ics)
 scores
 ```
 
@@ -302,7 +309,7 @@ gr()
 scree_plot(ics)
 ```
 
-For convineance, to look at the data taking the grouping by species and by sex into account we convert the categorical arrays into string arrays.
+For convenience, to look at the data taking the grouping by species and by sex into account we convert the categorical arrays into string arrays.
 
 ```{julia penguins-grouping}
 ## Convert the categorical arrays species and sex to string arrays
