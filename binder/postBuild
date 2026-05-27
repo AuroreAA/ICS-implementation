@@ -1,4 +1,0 @@
-#!/bin/bash
-
-cd Julia
-julia --project=. -e 'using Pkg; Pkg.instantiate()'
