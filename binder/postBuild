@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+cd Julia
+
+julia --project=. -e '
+using Pkg
+
+Pkg.instantiate()
+Pkg.precompile()
+
+# Warm-up (reduces lag for students)
+using ICSTools, Robustbase
+X = rand(10,5)
+ics = ICSModel()
+ICSTools.fit!(ics, X)
+
+println("Warm-up done ✅")
+'
