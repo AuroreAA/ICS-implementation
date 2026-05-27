@@ -1,0 +1,139 @@
+### A Pluto.jl notebook ###
+# v0.20.27
+
+using Markdown
+using InteractiveUtils
+
+# ╔═╡ be513068-c368-43ea-b364-cf809fc2c0b4
+import Pkg;Pkg.add("Robustbase"); using Robustbase
+
+# ╔═╡ 3c68a98c-5605-4c37-9cc4-6cf0b7dee599
+Pkg.add("ICSTools"); using ICSTools
+
+# ╔═╡ 13178725-6491-48f6-8a26-54112c2701e2
+using DataFrames; using GLMakie; using PairPlots
+
+# ╔═╡ 02b26da6-40d1-4b3c-a594-aff8016b0945
+
+
+# ╔═╡ 2f8d4781-a364-4803-ba5f-69f85ef1c055
+
+
+# ╔═╡ 50891330-1c60-4020-b4f6-f1200ca2b71d
+md"""
+!!! info "Invariant Coordinate Selection (ICS) - Julia tutorial"
+
+ICS and Related Methods Conference
+
+26-28 May 2026, Helsinki, Finland
+
+Valentin Todorov
+
+valentin@todorov.at
+
+May 28, 2026
+"""
+
+# ╔═╡ 1d6649a5-d166-4315-86a5-2483bf0cde8f
+md"""
+## Introduction
+
+Invariant Coordinate Selection (ICS) is an unsupervised multivariate statistical method used for dimension reduction, outlier detection, and cluster identification. By simultaneously diagonalizing two different scatter matrices, ICS projects high-dimensional data into a new, meaningful coordinate system to easily uncover underlying structures.
+It is particularly useful for dimension reduction. Unlike PCA, ICS is not based on variance maximization but on the maximization/minimization of a generalized kurtosis, and it is invariant not only to orthogonal data transformations but also to any affine transformation.
+
+The ```Julia``` ```ICSTools``` package brings the main functionalities of the ```R``` ```ICS``` package to ```Julia```, offering tools for identifying and selecting invariant coordinates in multivariate data. It includes various covariance estimators, transformation settings, and plotting utilities. Our extensive testing ensures results consistent with the ```R``` package, making it easy for users to transition from ```R``` to ```Julia``` or start fresh with ```ICS```.
+
+The source code of this project is available at our GitHub Repository:  [ICSTools](https://github.com/valentint/ICSTools.jl). 
+The complete documentation of the API with examples can be found at [```ICSTools``` Documentation](https://valentint.github.io/ICSTools.jl/dev/). 
+
+The results of the test coverage are available at 
+[```ICSTools``` Tests](https://app.codecov.io/github/valentint/ICSTools.jl?branch=main).
+
+"""
+
+# ╔═╡ 96d0c478-496e-4d52-9f35-cf89e83b252c
+X=wood[:,1:5]
+
+# ╔═╡ 0d2da234-7220-4b0f-9c31-ab3a8bebc1d4
+md"""
+Instantiate ICSModel object with all default parameters
+"""
+
+# ╔═╡ 944a2dd0-c566-4de7-b99c-1a6147407aed
+ics = ICSModel(); show(ics)
+
+# ╔═╡ 419582e3-80c4-4c47-8628-300a399e9a14
+using Plots; gr(); scree_plot(ics)
+
+# ╔═╡ 6c818515-5ce3-489f-8e45-cda02eb09266
+md"""
+With the function ```fit_predict!()``` we will fit the ICS model and transform the data - equivalent to 
+the function ```ICS-S3()``` from the ```R``` package ```ICS```.
+Alternatively, this can be done in two separate steps: ```fit!()``` and ```predict!()```, 
+as is usually done in machine learning pipelines.
+
+"""
+
+# ╔═╡ d1541171-8c74-49c6-9835-5057be5ea3d5
+scores = fit_predict!(ics, X); show(ics)
+
+# ╔═╡ a573192a-75bc-42bc-b5a6-8eeff8043e3f
+md"""
+The following example illustrates how to plot the transformed/predicted data (invariant components) using ```component_plot2()``` and the kurtosis of the invariant components (corresponding to the eigenvalues of the joint diagonalization problem) using ```scree_plot()```.
+"""
+
+# ╔═╡ 91b540b6-f400-485a-b9cb-ab6e0dd1e68f
+component_plot2(ics)                # by default the first two components
+
+# ╔═╡ daafa169-3178-43ca-940a-30ce1e3e408b
+component_plot2(ics, select=[3,4])  # select components 3 and 4
+
+# ╔═╡ 0210293a-292b-43be-a343-79114e5b14a0
+ss = DataFrame(scores, ["IC$i" for i=1:size(scores,2)]);
+
+# ╔═╡ 3c1706c7-e3af-41d5-a110-ca80c88d50a9
+fig_pairplot = pairplot(ss, fullgrid=true);
+
+# ╔═╡ 7d332a27-28aa-439d-b941-8fdca2181660
+fig2 = pairplot(
+    ss => (PairPlots.Scatter(markersize=10, color=:blue),
+          PairPlots.MarginDensity(color=:red)), 
+          fullgrid=true
+)
+
+# ╔═╡ 50fa8a8b-2c55-45b6-b4e0-8f510294586c
+
+
+# ╔═╡ 76b5db23-8174-445d-927e-ef2d92bbf32f
+
+
+# ╔═╡ c16b0170-5b0b-4618-b028-b6278bd6319d
+
+
+# ╔═╡ 4dbbfcee-37d0-4361-9058-ea3f9354e2de
+
+
+# ╔═╡ Cell order:
+# ╟─02b26da6-40d1-4b3c-a594-aff8016b0945
+# ╟─2f8d4781-a364-4803-ba5f-69f85ef1c055
+# ╟─50891330-1c60-4020-b4f6-f1200ca2b71d
+# ╟─1d6649a5-d166-4315-86a5-2483bf0cde8f
+# ╠═be513068-c368-43ea-b364-cf809fc2c0b4
+# ╠═96d0c478-496e-4d52-9f35-cf89e83b252c
+# ╠═3c68a98c-5605-4c37-9cc4-6cf0b7dee599
+# ╟─0d2da234-7220-4b0f-9c31-ab3a8bebc1d4
+# ╠═944a2dd0-c566-4de7-b99c-1a6147407aed
+# ╟─6c818515-5ce3-489f-8e45-cda02eb09266
+# ╠═d1541171-8c74-49c6-9835-5057be5ea3d5
+# ╟─a573192a-75bc-42bc-b5a6-8eeff8043e3f
+# ╠═419582e3-80c4-4c47-8628-300a399e9a14
+# ╠═91b540b6-f400-485a-b9cb-ab6e0dd1e68f
+# ╠═daafa169-3178-43ca-940a-30ce1e3e408b
+# ╠═13178725-6491-48f6-8a26-54112c2701e2
+# ╠═0210293a-292b-43be-a343-79114e5b14a0
+# ╠═3c1706c7-e3af-41d5-a110-ca80c88d50a9
+# ╠═7d332a27-28aa-439d-b941-8fdca2181660
+# ╟─50fa8a8b-2c55-45b6-b4e0-8f510294586c
+# ╟─76b5db23-8174-445d-927e-ef2d92bbf32f
+# ╟─c16b0170-5b0b-4618-b028-b6278bd6319d
+# ╟─4dbbfcee-37d0-4361-9058-ea3f9354e2de
